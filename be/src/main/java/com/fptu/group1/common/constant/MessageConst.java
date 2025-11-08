@@ -105,4 +105,21 @@ public class MessageConst {
     public static final String INFO_PROMOTION_UPDATED = "I0022";
     public static final String INFO_PROMOTION_DELETED = "I0023";
     public static final String INFO_PROMOTION_EMPTY = "I0024";
+
+    // ==== Product Errors ====
+    public static final String ERROR_PRODUCT_NOT_FOUND = "E0100";
+    public static final String ERROR_PRODUCT_NAME_EXISTS = "E0101";
+    public static final String ERROR_PRODUCT_SLUG_EXISTS = "E0102";
+    public static final String ERROR_PRODUCT_BRAND_NOT_FOUND = "E0103";
+    public static final String ERROR_PRODUCT_CATEGORY_NOT_FOUND = "E0104";
+    public static final String ERROR_PRODUCT_VARIANT_SKU_EXISTS = "E0105";
+    public static final String ERROR_PRODUCT_VARIANT_DUPLICATE_SKU = "E0106";
+    public static final String ERROR_PRODUCT_CREATE_FAILED = "E0107";
+    public static final String ERROR_INVALID_PRODUCT_DATA = "E0108";
+
+    // ==== Product Success Info ====
+    public static final String INFO_PRODUCT_CREATED = "I0100";
+    public static final String INFO_PRODUCT_FETCH_SUCCESS = "I0101";
+    public static final String INFO_PRODUCT_UPDATED = "I0102";
+    public static final String INFO_PRODUCT_DELETED = "I0103";
 }

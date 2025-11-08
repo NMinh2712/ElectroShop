@@ -55,4 +55,8 @@ public class RouteConst {
 
     // Chat Assistant routes
     public static final String CHAT_ASSISTANT_ROUTE = "/chat-assistant";
+
+    // Admin routes
+    public static final String ADMIN_ROUTE = "/admin";
+    public static final String ADMIN_PRODUCT_ROUTE = ADMIN_ROUTE + "/product";
 }
