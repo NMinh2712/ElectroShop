@@ -40,7 +40,7 @@ public class ProductRatingSummary {
 
     // Product identifier.
     @Id
-    @Column(name = "product_id")
+    @Column(name = "product_id", columnDefinition = "int")
     private Long productId;
 
     // Product name.
@@ -48,11 +48,11 @@ public class ProductRatingSummary {
     private String name;
 
     // Brand identifier.
-    @Column(name = "brand_id")
+    @Column(name = "brand_id", columnDefinition = "int")
     private Long brandId;
 
     // Category identifier.
-    @Column(name = "category_id")
+    @Column(name = "category_id", columnDefinition = "int")
     private Long categoryId;
 
     // Average rating value.

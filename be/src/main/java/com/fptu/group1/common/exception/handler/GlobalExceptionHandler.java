@@ -1,7 +1,9 @@
 package com.fptu.group1.common.exception.handler;
 
+import com.fptu.group1.common.constant.MessageConst;
 import com.fptu.group1.common.exception.BadRequestException;
 import com.fptu.group1.common.exception.ResourceNotFoundException;
+import com.fptu.group1.common.exception.UnauthorizedException;
 import com.fptu.group1.common.exception.dto.ErrorResponseBody;
 import com.fptu.group1.exception.DuplicateException;
 import lombok.extern.slf4j.Slf4j;
@@ -67,6 +69,16 @@ public class GlobalExceptionHandler {
                 .build();
 
         return new ResponseEntity<>(body, HttpStatus.CONFLICT);
+    }
+    
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ErrorResponseBody> handleUnauthorizedException(UnauthorizedException ex) {
+        ErrorResponseBody body = ErrorResponseBody.builder()
+                .code(MessageConst.ERROR_UNAUTHORIZED)
+                .message(ex.getMessage())
+                .build();
+
+        return new ResponseEntity<>(body, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)

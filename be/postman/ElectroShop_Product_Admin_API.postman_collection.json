@@ -1,0 +1,235 @@
+{
+	"info": {
+		"_postman_id": "electroshop-product-admin-api",
+		"name": "ElectroShop Product Admin API",
+		"description": "Collection for testing Product Admin APIs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Add Product - Laptop Example",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"ASUS ZenBook 14 OLED\",\n  \"slug\": \"asus-zenbook-14-oled\",\n  \"shortDescription\": \"Ultra-thin laptop with stunning OLED display\",\n  \"fullDescription\": \"The ASUS ZenBook 14 OLED features a stunning 14-inch OLED display with 2.8K resolution, Intel Core i7-1260P processor, 16GB LPDDR5 RAM, and 512GB PCIe 4.0 SSD storage. Perfect for professionals and content creators.\",\n  \"brandId\": 1,\n  \"categoryId\": 1,\n  \"modelNumber\": \"UX3402ZA-KM241W\",\n  \"releaseYear\": 2024,\n  \"defaultPrice\": 25000000,\n  \"variants\": [\n    {\n      \"sku\": \"LAPTOP-ASUS-001-512GB\",\n      \"attributes\": \"Storage: 512GB SSD, Color: Jade Black\",\n      \"price\": 25000000,\n      \"stock\": 50,\n      \"isActive\": true\n    },\n    {\n      \"sku\": \"LAPTOP-ASUS-001-1TB\",\n      \"attributes\": \"Storage: 1TB SSD, Color: Jade Black\",\n      \"price\": 28000000,\n      \"stock\": 30,\n      \"isActive\": true\n    }\n  ],\n  \"specifications\": [\n    {\n      \"specKey\": \"Screen Size\",\n      \"specValue\": \"14 inches\"\n    },\n    {\n      \"specKey\": \"Screen Resolution\",\n      \"specValue\": \"2880 x 1800 (2.8K)\"\n    },\n    {\n      \"specKey\": \"Display Type\",\n      \"specValue\": \"OLED\"\n    },\n    {\n      \"specKey\": \"Processor\",\n      \"specValue\": \"Intel Core i7-1260P\"\n    },\n    {\n      \"specKey\": \"RAM\",\n      \"specValue\": \"16GB LPDDR5\"\n    },\n    {\n      \"specKey\": \"Storage\",\n      \"specValue\": \"512GB PCIe 4.0 SSD\"\n    },\n    {\n      \"specKey\": \"Graphics\",\n      \"specValue\": \"Intel Iris Xe\"\n    },\n    {\n      \"specKey\": \"Operating System\",\n      \"specValue\": \"Windows 11 Home\"\n    },\n    {\n      \"specKey\": \"Weight\",\n      \"specValue\": \"1.39 kg\"\n    },\n    {\n      \"specKey\": \"Battery\",\n      \"specValue\": \"75Wh\"\n    }\n  ]\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/admin/product/add",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"admin",
+						"product",
+						"add"
+					]
+				},
+				"description": "Add a new laptop product with variants and specifications"
+			},
+			"response": []
+		},
+		{
+			"name": "Add Product - Mouse Example",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Logitech MX Master 3S Wireless Mouse\",\n  \"shortDescription\": \"Premium wireless mouse for professionals\",\n  \"fullDescription\": \"The Logitech MX Master 3S is a premium wireless mouse designed for professionals. Features MagSpeed scrolling, Darkfield sensor for any surface, and multi-device connectivity.\",\n  \"brandId\": 2,\n  \"categoryId\": 2,\n  \"modelNumber\": \"MX-MASTER-3S\",\n  \"releaseYear\": 2022,\n  \"defaultPrice\": 2500000,\n  \"variants\": [\n    {\n      \"sku\": \"MOUSE-LOGI-001-BLACK\",\n      \"attributes\": \"Color: Graphite (Black)\",\n      \"price\": 2500000,\n      \"stock\": 100,\n      \"isActive\": true\n    },\n    {\n      \"sku\": \"MOUSE-LOGI-001-WHITE\",\n      \"attributes\": \"Color: Pale Gray (White)\",\n      \"price\": 2500000,\n      \"stock\": 80,\n      \"isActive\": true\n    },\n    {\n      \"sku\": \"MOUSE-LOGI-001-ROSE\",\n      \"attributes\": \"Color: Rose\",\n      \"price\": 2500000,\n      \"stock\": 60,\n      \"isActive\": true\n    }\n  ],\n  \"specifications\": [\n    {\n      \"specKey\": \"Connection Type\",\n      \"specValue\": \"Wireless (Bluetooth, USB Receiver)\"\n    },\n    {\n      \"specKey\": \"Sensor\",\n      \"specValue\": \"Darkfield High Precision\"\n    },\n    {\n      \"specKey\": \"DPI\",\n      \"specValue\": \"200 - 8000 DPI\"\n    },\n    {\n      \"specKey\": \"Battery Life\",\n      \"specValue\": \"Up to 70 days\"\n    },\n    {\n      \"specKey\": \"Buttons\",\n      \"specValue\": \"7 programmable buttons\"\n    },\n    {\n      \"specKey\": \"Weight\",\n      \"specValue\": \"141g\"\n    },\n    {\n      \"specKey\": \"Compatibility\",\n      \"specValue\": \"Windows, macOS, Linux, iPad\"\n    }\n  ]\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/admin/product/add",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"admin",
+						"product",
+						"add"
+					]
+				},
+				"description": "Add a new mouse product with multiple color variants"
+			},
+			"response": []
+		},
+		{
+			"name": "Add Product - Keyboard Example",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Corsair K70 RGB TKL Mechanical Gaming Keyboard\",\n  \"shortDescription\": \"Tenkeyless mechanical gaming keyboard with RGB lighting\",\n  \"fullDescription\": \"The Corsair K70 RGB TKL is a tenkeyless mechanical gaming keyboard featuring CHERRY MX switches, per-key RGB backlighting, and aircraft-grade aluminum frame. Perfect for gaming and typing.\",\n  \"brandId\": 3,\n  \"categoryId\": 2,\n  \"modelNumber\": \"CH-9119014-NA\",\n  \"releaseYear\": 2023,\n  \"defaultPrice\": 3500000,\n  \"variants\": [\n    {\n      \"sku\": \"KEYBOARD-CORS-001-RED\",\n      \"attributes\": \"Switch: CHERRY MX Red, Layout: US\",\n      \"price\": 3500000,\n      \"stock\": 40,\n      \"isActive\": true\n    },\n    {\n      \"sku\": \"KEYBOARD-CORS-001-BLUE\",\n      \"attributes\": \"Switch: CHERRY MX Blue, Layout: US\",\n      \"price\": 3500000,\n      \"stock\": 35,\n      \"isActive\": true\n    },\n    {\n      \"sku\": \"KEYBOARD-CORS-001-BROWN\",\n      \"attributes\": \"Switch: CHERRY MX Brown, Layout: US\",\n      \"price\": 3500000,\n      \"stock\": 30,\n      \"isActive\": true\n    }\n  ],\n  \"specifications\": [\n    {\n      \"specKey\": \"Switch Type\",\n      \"specValue\": \"CHERRY MX (Red/Blue/Brown)\"\n    },\n    {\n      \"specKey\": \"Layout\",\n      \"specValue\": \"Tenkeyless (TKL) - 87 keys\"\n    },\n    {\n      \"specKey\": \"Lighting\",\n      \"specValue\": \"Per-key RGB backlighting\"\n    },\n    {\n      \"specKey\": \"Connection Type\",\n      \"specValue\": \"USB Type-C\"\n    },\n    {\n      \"specKey\": \"Frame Material\",\n      \"specValue\": \"Aircraft-grade aluminum\"\n    },\n    {\n      \"specKey\": \"Keycap Material\",\n      \"specValue\": \"Double-shot PBT\"\n    },\n    {\n      \"specKey\": \"Polling Rate\",\n      \"specValue\": \"8000Hz\"\n    },\n    {\n      \"specKey\": \"Dimensions\",\n      \"specValue\": \"357 x 138 x 36 mm\"\n    },\n    {\n      \"specKey\": \"Weight\",\n      \"specValue\": \"0.86 kg\"\n    }\n  ]\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/admin/product/add",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"admin",
+						"product",
+						"add"
+					]
+				},
+				"description": "Add a new keyboard product with different switch variants"
+			},
+			"response": []
+		},
+		{
+			"name": "Add Product - Minimal Example",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Test Product\",\n  \"brandId\": 1,\n  \"categoryId\": 1,\n  \"defaultPrice\": 1000000,\n  \"variants\": [\n    {\n      \"sku\": \"TEST-PRODUCT-001\",\n      \"price\": 1000000,\n      \"stock\": 10,\n      \"isActive\": true\n    }\n  ]\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/admin/product/add",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"admin",
+						"product",
+						"add"
+					]
+				},
+				"description": "Add a product with minimal required fields"
+			},
+			"response": []
+		},
+		{
+			"name": "Add Product - Error: Missing Required Fields",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"shortDescription\": \"This request should fail validation\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/admin/product/add",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"admin",
+						"product",
+						"add"
+					]
+				},
+				"description": "Test validation error with missing required fields"
+			},
+			"response": []
+		},
+		{
+			"name": "Add Product - Error: Invalid Brand ID",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Test Product Invalid Brand\",\n  \"brandId\": 9999,\n  \"categoryId\": 1,\n  \"defaultPrice\": 1000000,\n  \"variants\": [\n    {\n      \"sku\": \"TEST-INVALID-BRAND\",\n      \"price\": 1000000,\n      \"stock\": 10,\n      \"isActive\": true\n    }\n  ]\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/admin/product/add",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"admin",
+						"product",
+						"add"
+					]
+				},
+				"description": "Test error when brand ID does not exist"
+			},
+			"response": []
+		},
+		{
+			"name": "Add Product - Error: Duplicate SKU",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Test Product Duplicate SKU\",\n  \"brandId\": 1,\n  \"categoryId\": 1,\n  \"defaultPrice\": 1000000,\n  \"variants\": [\n    {\n      \"sku\": \"DUPLICATE-SKU\",\n      \"price\": 1000000,\n      \"stock\": 10,\n      \"isActive\": true\n    },\n    {\n      \"sku\": \"DUPLICATE-SKU\",\n      \"price\": 1200000,\n      \"stock\": 15,\n      \"isActive\": true\n    }\n  ]\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/admin/product/add",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"admin",
+						"product",
+						"add"
+					]
+				},
+				"description": "Test error when duplicate SKU in variants"
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}
+

@@ -34,7 +34,7 @@ public class PromotionProduct {
 
     // Composite key part 1: Reference to the promotion.
     @Id
-    @Column(name = "promotion_id", nullable = false)
+    @Column(name = "promotion_id", nullable = false, columnDefinition = "int")
     private Long promotionId;
 
     // Promotion entity relationship.
@@ -44,7 +44,7 @@ public class PromotionProduct {
 
     // Composite key part 2: Reference to the product.
     @Id
-    @Column(name = "product_id", nullable = false)
+    @Column(name = "product_id", nullable = false, columnDefinition = "int")
     private Long productId;
 
     // Product entity relationship.
