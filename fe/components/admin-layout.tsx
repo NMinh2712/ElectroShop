@@ -11,12 +11,12 @@ export function AdminLayout({ children }: { children: ReactNode }) {
   const router = useRouter()
 
   useEffect(() => {
-    if (!isAuthenticated || (user && user.role !== "admin" && user.role !== "staff")) {
+    if (!isAuthenticated || (user && user.roleId !== 1 && user.roleId !== 2)) {
       router.push("/auth/login")
     }
   }, [isAuthenticated, user, router])
 
-  if (!isAuthenticated || !user || (user.role !== "admin" && user.role !== "staff")) {
+  if (!isAuthenticated || !user || (user.roleId !== 1 && user.roleId !== 2)) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">

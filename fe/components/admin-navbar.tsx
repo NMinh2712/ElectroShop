@@ -23,11 +23,13 @@ export function AdminNavbar() {
         <div className="hidden md:flex items-center gap-4">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white text-xs font-bold">
-              {user?.name.charAt(0).toUpperCase()}
+              {((user?.name || user?.username || user?.email)?.charAt(0) || "A").toUpperCase()}
             </div>
             <div className="text-sm">
-              <p className="font-semibold text-foreground">{user?.name}</p>
-              <p className="text-xs text-muted-foreground capitalize">{user?.role}</p>
+              <p className="font-semibold text-foreground">{user?.name || user?.username || "Admin"}</p>
+              <p className="text-xs text-muted-foreground">
+                {user?.roleId === 1 ? "Admin" : user?.roleId === 2 ? "Staff" : "User"}
+              </p>
             </div>
           </div>
           <Button variant="outline" size="sm" onClick={logout} className="gap-2 bg-transparent">
@@ -47,11 +49,13 @@ export function AdminNavbar() {
         <div className="md:hidden border-t bg-muted/50 p-4">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white text-xs font-bold">
-              {user?.name.charAt(0).toUpperCase()}
+              {((user?.name || user?.username || user?.email)?.charAt(0) || "A").toUpperCase()}
             </div>
             <div className="text-sm">
-              <p className="font-semibold text-foreground">{user?.name}</p>
-              <p className="text-xs text-muted-foreground capitalize">{user?.role}</p>
+              <p className="font-semibold text-foreground">{user?.name || user?.username || "Admin"}</p>
+              <p className="text-xs text-muted-foreground">
+                {user?.roleId === 1 ? "Admin" : user?.roleId === 2 ? "Staff" : "User"}
+              </p>
             </div>
           </div>
           <Button variant="outline" size="sm" onClick={logout} className="w-full gap-2 bg-transparent">

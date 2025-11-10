@@ -58,7 +58,7 @@ export function Header() {
               <div className="flex items-center gap-4">
                 <Link href="/account" className="flex items-center gap-2 hover:text-primary transition">
                   <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white text-sm font-bold">
-                    {user.name.charAt(0)}
+                    {(user.name || user.username || user.email || "U").charAt(0).toUpperCase()}
                   </div>
                 </Link>
                 <Button variant="outline" size="sm" onClick={logout}>

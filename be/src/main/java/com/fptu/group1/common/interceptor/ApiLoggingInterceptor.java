@@ -23,6 +23,12 @@ public class ApiLoggingInterceptor {
         long startTime = System.currentTimeMillis();
         Object result = pjp.proceed();
         long endTime = System.currentTimeMillis();
+        
+        long duration = endTime - startTime;
+        log.debug("API call: {} {} - Duration: {}ms", 
+                request.getMethod(), 
+                request.getRequestURI(), 
+                duration);
 
         return result;
     }

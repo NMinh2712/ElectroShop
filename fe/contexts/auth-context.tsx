@@ -1,13 +1,14 @@
 "use client"
 
-import { createContext, useContext, useState, type ReactNode } from "react"
-import type { User } from "@/lib/types"
-import { mockUsers } from "@/lib/mock-data"
+import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
+import { apiClient } from "@/lib/api-client"
+import type { LoginResponse, User } from "@/lib/types"
 
 interface AuthContextType {
   user: User | null
   isAuthenticated: boolean
-  login: (email: string, password: string) => Promise<User>
+  isLoading: boolean
+  login: (username: string, password: string) => Promise<LoginResponse>
   logout: () => void
   register: (data: any) => Promise<void>
 }
@@ -16,37 +17,79 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
-  const login = async (email: string, password: string): Promise<User> => {
-    // Mock authentication - in production this would call an API
-    const foundUser = mockUsers.find((u) => u.email === email)
-    if (foundUser && password === "password") {
-      setUser(foundUser)
-      return foundUser
-    } else {
-      throw new Error("Invalid credentials")
+  // Check if user is already logged in on mount
+  useEffect(() => {
+    const storedToken = localStorage.getItem("auth_token")
+    const storedUser = localStorage.getItem("auth_user")
+
+    if (storedToken && storedUser) {
+      try {
+        setUser(JSON.parse(storedUser))
+      } catch (err) {
+        localStorage.removeItem("auth_token")
+        localStorage.removeItem("auth_user")
+      }
+    }
+    setIsLoading(false)
+  }, [])
+
+  const login = async (username: string, password: string): Promise<LoginResponse> => {
+    try {
+      const response = await apiClient.login(username, password)
+
+      if (response.success) {
+        const userData: User = {
+          userId: response.data.userId,
+          username: response.data.username,
+          email: response.data.email,
+          roleId: response.data.roleId,
+          name: response.data.name,
+        }
+        localStorage.setItem("auth_token", response.data.token)
+        localStorage.setItem("auth_user", JSON.stringify(userData))
+        setUser(userData)
+        return response.data
+      } else {
+        throw new Error(response.message || "Login failed")
+      }
+    } catch (err: any) {
+      throw new Error(err.message || "Invalid username or password")
     }
   }
 
   const logout = () => {
+    localStorage.removeItem("auth_token")
+    localStorage.removeItem("auth_user")
     setUser(null)
   }
 
   const register = async (data: any) => {
-    // Mock registration
-    const newUser: User = {
-      id: "user" + Date.now(),
-      email: data.email,
-      name: data.name,
-      phone: data.phone,
-      role: "user",
-      createdAt: new Date(),
+    try {
+      const response = await apiClient.register(data)
+
+      if (response.success) {
+        const userData: User = {
+          userId: response.data.userId,
+          username: response.data.username,
+          email: response.data.email,
+          roleId: 3, // Default to ROLE_USER (3)
+          name: response.data.name,
+        }
+        localStorage.setItem("auth_token", response.data.token || "")
+        localStorage.setItem("auth_user", JSON.stringify(userData))
+        setUser(userData)
+      } else {
+        throw new Error(response.message || "Registration failed")
+      }
+    } catch (err: any) {
+      throw new Error(err.message || "Registration failed")
     }
-    setUser(newUser)
   }
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated: !!user, login, logout, register }}>
+    <AuthContext.Provider value={{ user, isAuthenticated: !!user, isLoading, login, logout, register }}>
       {children}
     </AuthContext.Provider>
   )

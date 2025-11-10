@@ -14,11 +14,16 @@
 					{
 						"key": "Content-Type",
 						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"description": "JWT token for admin authentication"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"name\": \"ASUS ZenBook 14 OLED\",\n  \"slug\": \"asus-zenbook-14-oled\",\n  \"shortDescription\": \"Ultra-thin laptop with stunning OLED display\",\n  \"fullDescription\": \"The ASUS ZenBook 14 OLED features a stunning 14-inch OLED display with 2.8K resolution, Intel Core i7-1260P processor, 16GB LPDDR5 RAM, and 512GB PCIe 4.0 SSD storage. Perfect for professionals and content creators.\",\n  \"brandId\": 1,\n  \"categoryId\": 1,\n  \"modelNumber\": \"UX3402ZA-KM241W\",\n  \"releaseYear\": 2024,\n  \"defaultPrice\": 25000000,\n  \"variants\": [\n    {\n      \"sku\": \"LAPTOP-ASUS-001-512GB\",\n      \"attributes\": \"Storage: 512GB SSD, Color: Jade Black\",\n      \"price\": 25000000,\n      \"stock\": 50,\n      \"isActive\": true\n    },\n    {\n      \"sku\": \"LAPTOP-ASUS-001-1TB\",\n      \"attributes\": \"Storage: 1TB SSD, Color: Jade Black\",\n      \"price\": 28000000,\n      \"stock\": 30,\n      \"isActive\": true\n    }\n  ],\n  \"specifications\": [\n    {\n      \"specKey\": \"Screen Size\",\n      \"specValue\": \"14 inches\"\n    },\n    {\n      \"specKey\": \"Screen Resolution\",\n      \"specValue\": \"2880 x 1800 (2.8K)\"\n    },\n    {\n      \"specKey\": \"Display Type\",\n      \"specValue\": \"OLED\"\n    },\n    {\n      \"specKey\": \"Processor\",\n      \"specValue\": \"Intel Core i7-1260P\"\n    },\n    {\n      \"specKey\": \"RAM\",\n      \"specValue\": \"16GB LPDDR5\"\n    },\n    {\n      \"specKey\": \"Storage\",\n      \"specValue\": \"512GB PCIe 4.0 SSD\"\n    },\n    {\n      \"specKey\": \"Graphics\",\n      \"specValue\": \"Intel Iris Xe\"\n    },\n    {\n      \"specKey\": \"Operating System\",\n      \"specValue\": \"Windows 11 Home\"\n    },\n    {\n      \"specKey\": \"Weight\",\n      \"specValue\": \"1.39 kg\"\n    },\n    {\n      \"specKey\": \"Battery\",\n      \"specValue\": \"75Wh\"\n    }\n  ]\n}"
+					"raw": "{\n  \"name\": \"ASUS ZenBook 14 OLED\",\n  \"slug\": \"asus-zenbook-14-oled\",\n  \"shortDescription\": \"Ultra-thin laptop with stunning OLED display\",\n  \"fullDescription\": \"The ASUS ZenBook 14 OLED features a stunning 14-inch OLED display with 2.8K resolution, Intel Core i7-1260P processor, 16GB LPDDR5 RAM, and 512GB PCIe 4.0 SSD storage. Perfect for professionals and content creators.\",\n  \"brandId\": 1,\n  \"categoryId\": 1,\n  \"modelNumber\": \"UX3402ZA-KM241W\",\n  \"releaseYear\": 2024,\n  \"defaultPrice\": 25000000,\n  \"imageUrl\": \"https://example.com/images/asus-zenbook-14-oled.jpg\",\n  \"variants\": [\n    {\n      \"sku\": \"LAPTOP-ASUS-001-512GB\",\n      \"attributes\": \"Storage: 512GB SSD, Color: Jade Black\",\n      \"price\": 25000000,\n      \"stock\": 50,\n      \"isActive\": true\n    },\n    {\n      \"sku\": \"LAPTOP-ASUS-001-1TB\",\n      \"attributes\": \"Storage: 1TB SSD, Color: Jade Black\",\n      \"price\": 28000000,\n      \"stock\": 30,\n      \"isActive\": true\n    }\n  ],\n  \"specifications\": [\n    {\n      \"specKey\": \"Screen Size\",\n      \"specValue\": \"14 inches\"\n    },\n    {\n      \"specKey\": \"Screen Resolution\",\n      \"specValue\": \"2880 x 1800 (2.8K)\"\n    },\n    {\n      \"specKey\": \"Display Type\",\n      \"specValue\": \"OLED\"\n    },\n    {\n      \"specKey\": \"Processor\",\n      \"specValue\": \"Intel Core i7-1260P\"\n    },\n    {\n      \"specKey\": \"RAM\",\n      \"specValue\": \"16GB LPDDR5\"\n    },\n    {\n      \"specKey\": \"Storage\",\n      \"specValue\": \"512GB PCIe 4.0 SSD\"\n    },\n    {\n      \"specKey\": \"Graphics\",\n      \"specValue\": \"Intel Iris Xe\"\n    },\n    {\n      \"specKey\": \"Operating System\",\n      \"specValue\": \"Windows 11 Home\"\n    },\n    {\n      \"specKey\": \"Weight\",\n      \"specValue\": \"1.39 kg\"\n    },\n    {\n      \"specKey\": \"Battery\",\n      \"specValue\": \"75Wh\"\n    }\n  ]\n}"
 				},
 				"url": {
 					"raw": "{{base_url}}/api/v1/admin/product/add",
@@ -222,6 +227,146 @@
 				"description": "Test error when duplicate SKU in variants"
 			},
 			"response": []
+		},
+		{
+			"name": "Update Product",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"description": "JWT token for admin authentication"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"ASUS ZenBook 14 OLED (Updated)\",\n  \"shortDescription\": \"Updated description\",\n  \"defaultPrice\": 26000000,\n  \"imageUrl\": \"https://example.com/images/asus-zenbook-14-oled-updated.jpg\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/admin/product/1",
+					"host": ["{{base_url}}"],
+					"path": ["api", "v1", "admin", "product", "1"]
+				},
+				"description": "Update product by ID"
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Products",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"description": "JWT token for admin authentication"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/v1/admin/product?page=0&size=10&sortBy=createdAt&sortDir=DESC",
+					"host": ["{{base_url}}"],
+					"path": ["api", "v1", "admin", "product"],
+					"query": [
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "size",
+							"value": "10"
+						},
+						{
+							"key": "sortBy",
+							"value": "createdAt"
+						},
+						{
+							"key": "sortDir",
+							"value": "DESC"
+						}
+					]
+				},
+				"description": "Get all products with pagination"
+			},
+			"response": []
+		},
+		{
+			"name": "Search Products",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"description": "JWT token for admin authentication"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/v1/admin/product?page=0&size=10&keyword=ASUS",
+					"host": ["{{base_url}}"],
+					"path": ["api", "v1", "admin", "product"],
+					"query": [
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "size",
+							"value": "10"
+						},
+						{
+							"key": "keyword",
+							"value": "ASUS"
+						}
+					]
+				},
+				"description": "Search products by keyword"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Product by ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"description": "JWT token for admin authentication"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/v1/admin/product/1",
+					"host": ["{{base_url}}"],
+					"path": ["api", "v1", "admin", "product", "1"]
+				},
+				"description": "Get product detail by ID"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Product",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"description": "JWT token for admin authentication"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/v1/admin/product/1",
+					"host": ["{{base_url}}"],
+					"path": ["api", "v1", "admin", "product", "1"]
+				},
+				"description": "Delete product by ID (soft delete)"
+			},
+			"response": []
 		}
 	],
 	"variable": [
@@ -229,6 +374,12 @@
 			"key": "base_url",
 			"value": "http://localhost:8080",
 			"type": "string"
+		},
+		{
+			"key": "jwt_token",
+			"value": "",
+			"type": "string",
+			"description": "JWT token obtained from login endpoint"
 		}
 	]
 }

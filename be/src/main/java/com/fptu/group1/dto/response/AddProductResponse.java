@@ -30,6 +30,9 @@ public class AddProductResponse {
     @Schema(description = "Category ID")
     private Long categoryId;
     
+    @Schema(description = "Main image URL of the product")
+    private String imageUrl;
+    
     @Schema(description = "Number of variants created")
     private Integer variantCount;
     

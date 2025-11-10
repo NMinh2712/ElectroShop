@@ -1,0 +1,145 @@
+{
+	"info": {
+		"_postman_id": "electroshop-order-admin-api",
+		"name": "ElectroShop Order Admin API",
+		"description": "Collection for testing Order Admin APIs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get All Orders",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"description": "JWT token for admin authentication"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/v1/admin/order?page=0&size=10&sortBy=createdAt&sortDir=DESC",
+					"host": ["{{base_url}}"],
+					"path": ["api", "v1", "admin", "order"],
+					"query": [
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "size",
+							"value": "10"
+						},
+						{
+							"key": "sortBy",
+							"value": "createdAt"
+						},
+						{
+							"key": "sortDir",
+							"value": "DESC"
+						}
+					]
+				},
+				"description": "Get all orders with pagination"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Orders by Status",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"description": "JWT token for admin authentication"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/v1/admin/order?page=0&size=10&statusId=1",
+					"host": ["{{base_url}}"],
+					"path": ["api", "v1", "admin", "order"],
+					"query": [
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "size",
+							"value": "10"
+						},
+						{
+							"key": "statusId",
+							"value": "1",
+							"description": "Status ID: 1=PENDING, 2=CONFIRMED, 3=PROCESSING, 4=SHIPPED, 5=DELIVERED, 6=CANCELLED, 7=REFUNDED"
+						}
+					]
+				},
+				"description": "Get orders filtered by status"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Order Detail",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"description": "JWT token for admin authentication"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/v1/admin/order/1",
+					"host": ["{{base_url}}"],
+					"path": ["api", "v1", "admin", "order", "1"]
+				},
+				"description": "Get order detail by ID"
+			},
+			"response": []
+		},
+		{
+			"name": "Update Order Status",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"description": "JWT token for admin authentication"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"statusId\": 2\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/admin/order/1/status",
+					"host": ["{{base_url}}"],
+					"path": ["api", "v1", "admin", "order", "1", "status"]
+				},
+				"description": "Update order status (1=PENDING, 2=CONFIRMED, 3=PROCESSING, 4=SHIPPED, 5=DELIVERED, 6=CANCELLED, 7=REFUNDED)"
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "jwt_token",
+			"value": "",
+			"type": "string",
+			"description": "JWT token obtained from login endpoint"
+		}
+	]
+}
+

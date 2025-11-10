@@ -58,6 +58,10 @@ public class AddProductRequest {
     @Schema(description = "Default price of the product", example = "25000000")
     private BigDecimal defaultPrice;
     
+    @Size(max = 500, message = "Image URL must not exceed 500 characters")
+    @Schema(description = "Main image URL of the product", example = "https://example.com/images/product.jpg")
+    private String imageUrl;
+    
     @Valid
     @Schema(description = "List of product variants")
     @Builder.Default

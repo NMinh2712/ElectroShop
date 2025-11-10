@@ -1,34 +1,94 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { mockProducts } from "@/lib/mock-data"
 import { ShoppingCart, Trash2, ArrowLeft } from "lucide-react"
+import { useAuth } from "@/contexts/auth-context"
+import { apiClient } from "@/lib/api-client"
 
 export default function CartPage() {
-  const [cartItems, setCartItems] = useState([
-    { productId: "prod1", variantId: "var1", quantity: 1 },
-    { productId: "prod5", variantId: "var10", quantity: 1 },
-  ])
+  const router = useRouter()
+  const { user, isAuthenticated } = useAuth()
+  const [cartItems, setCartItems] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState("")
 
-  const cartProducts = cartItems
-    .map((item) => {
-      const product = mockProducts.find((p) => p.id === item.productId)
-      return product ? { ...product, ...item } : null
-    })
-    .filter(Boolean)
+  useEffect(() => {
+    if (!isAuthenticated) {
+      router.push("/auth/login")
+      return
+    }
 
-  const subtotal = cartProducts.reduce((sum: any, item: any) => sum + item.price * item.quantity, 0)
-  const tax = subtotal * 0.1
-  const total = subtotal + tax
+    const fetchCart = async () => {
+      try {
+        setLoading(true)
+        const response = await apiClient.getCart()
+        if (response.success) {
+          setCartItems(response.data.items || [])
+          setError("")
+        } else {
+          setError(response.message)
+        }
+      } catch (error: any) {
+        setError("Failed to load cart")
+        console.error(error)
+      } finally {
+        setLoading(false)
+      }
+    }
 
-  const removeFromCart = (productId: string) => {
-    setCartItems(cartItems.filter((item) => item.productId !== productId))
+    fetchCart()
+  }, [isAuthenticated, router])
+
+  const handleRemoveItem = async (variantId: number) => {
+    try {
+      const response = await apiClient.removeFromCart(variantId)
+      if (response.success) {
+        setCartItems(cartItems.filter((item) => item.variantId !== variantId))
+      } else {
+        setError(response.message)
+      }
+    } catch (error: any) {
+      setError("Failed to remove item from cart")
+      console.error(error)
+    }
   }
+
+  const handleUpdateQuantity = async (variantId: number, quantity: number) => {
+    if (quantity <= 0) {
+      await handleRemoveItem(variantId)
+      return
+    }
+
+    try {
+      const response = await apiClient.updateCartQuantity(variantId, quantity)
+      if (response.success) {
+        setCartItems(response.data.items || [])
+      } else {
+        setError(response.message)
+      }
+    } catch (error: any) {
+      setError("Failed to update quantity")
+      console.error(error)
+    }
+  }
+
+  if (loading) {
+    return (
+      <>
+        <Header />
+        <main className="min-h-screen flex items-center justify-center">Loading cart...</main>
+        <Footer />
+      </>
+    )
+  }
+
+  const totalPrice = cartItems.reduce((sum, item) => sum + (item.subtotal || 0), 0)
 
   return (
     <>
@@ -41,6 +101,10 @@ export default function CartPage() {
           </Link>
 
           <h1 className="text-3xl font-bold mb-8">Shopping Cart</h1>
+
+          {error && (
+            <Card className="p-4 mb-6 bg-destructive/10 border border-destructive/30 text-destructive">{error}</Card>
+          )}
 
           {cartItems.length === 0 ? (
             <Card className="p-12 text-center">
@@ -55,32 +119,45 @@ export default function CartPage() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Cart Items */}
               <div className="lg:col-span-2 space-y-4">
-                {cartProducts.map((item: any) => (
-                  <Card key={item.productId} className="p-4">
+                {cartItems.map((item) => (
+                  <Card key={item.variantId} className="p-4">
                     <div className="flex gap-4">
                       <img
-                        src={item.images[0] || "/placeholder.svg"}
-                        alt={item.name}
+                        src={`http://localhost:8080${item.imageUrl}` || "/placeholder.svg"}
+                        alt={item.productName}
                         className="w-24 h-24 object-cover rounded-lg"
                       />
                       <div className="flex-1">
-                        <Link href={`/products/${item.slug}`}>
-                          <h3 className="font-semibold hover:text-primary transition">{item.name}</h3>
+                        <Link href={`/products/${item.productId}`}>
+                          <h3 className="font-semibold hover:text-primary transition">{item.productName}</h3>
                         </Link>
-                        <p className="text-sm text-muted-foreground">{item.brand}</p>
+                        <p className="text-sm text-muted-foreground">{item.attributes}</p>
+                        <p className="text-sm text-muted-foreground mb-2">SKU: {item.sku}</p>
                         <div className="flex items-center justify-between mt-4">
-                          <div className="flex items-center gap-2">
-                            <span className="text-lg font-bold">${item.price}</span>
-                            {item.originalPrice && (
-                              <span className="text-sm text-muted-foreground line-through">${item.originalPrice}</span>
-                            )}
+                          <div>
+                            <span className="text-lg font-bold">{item.price?.toLocaleString("vi-VN")} VND</span>
                           </div>
-                          <button
-                            onClick={() => removeFromCart(item.productId)}
-                            className="text-destructive hover:text-destructive/80 transition"
-                          >
-                            <Trash2 size={18} />
-                          </button>
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => handleUpdateQuantity(item.variantId, item.quantity - 1)}
+                              className="px-2 py-1 border border-input rounded hover:bg-muted"
+                            >
+                              -
+                            </button>
+                            <span className="px-4">{item.quantity}</span>
+                            <button
+                              onClick={() => handleUpdateQuantity(item.variantId, item.quantity + 1)}
+                              className="px-2 py-1 border border-input rounded hover:bg-muted"
+                            >
+                              +
+                            </button>
+                            <button
+                              onClick={() => handleRemoveItem(item.variantId)}
+                              className="text-destructive hover:text-destructive/80 transition ml-4"
+                            >
+                              <Trash2 size={18} />
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -94,19 +171,17 @@ export default function CartPage() {
                   <h2 className="text-lg font-bold mb-4">Order Summary</h2>
                   <div className="space-y-2 mb-4">
                     <div className="flex justify-between">
-                      <span>Subtotal</span>
-                      <span>${subtotal.toFixed(2)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Tax (10%)</span>
-                      <span>${tax.toFixed(2)}</span>
+                      <span>Total Items</span>
+                      <span>{cartItems.reduce((sum, item) => sum + item.quantity, 0)}</span>
                     </div>
                     <div className="border-t pt-2 flex justify-between font-bold">
                       <span>Total</span>
-                      <span>${total.toFixed(2)}</span>
+                      <span>{totalPrice?.toLocaleString("vi-VN")} VND</span>
                     </div>
                   </div>
-                  <Button className="w-full">Proceed to Checkout</Button>
+                  <Link href="/checkout" className="block">
+                    <Button className="w-full">Proceed to Checkout</Button>
+                  </Link>
                 </Card>
               </div>
             </div>

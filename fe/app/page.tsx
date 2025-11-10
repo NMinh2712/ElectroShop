@@ -4,12 +4,36 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { mockProducts, mockPromotions } from "@/lib/mock-data"
+import { mockPromotions } from "@/lib/mock-data"
 import { Star, Zap, Shield, Truck } from "lucide-react"
+import { useState, useEffect } from "react"
+import { apiClient } from "@/lib/api-client"
 
 export default function Home() {
+  const [featuredProducts, setFeaturedProducts] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await apiClient.getProducts(0, 6)
+        if (response.success) {
+          setFeaturedProducts(response.data.products || [])
+          setError(null)
+        }
+      } catch (error: any) {
+        console.error("Failed to fetch products:", error)
+        setError("Unable to load products. Please check if the API server is running.")
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchProducts()
+  }, [])
+
   const categories = ["Smartphones", "Tablets", "Accessories", "Computers"]
-  const featuredProducts = mockProducts.slice(0, 6)
 
   return (
     <>
@@ -88,7 +112,7 @@ export default function Home() {
                 <Link key={category} href={`/products?category=${category}`}>
                   <Card className="p-6 text-center hover:shadow-lg transition cursor-pointer h-full flex flex-col items-center justify-center">
                     <img
-                      src={`/placeholder.svg?height=100&width=100&query=${category}`}
+                      src={`/.jpg?height=100&width=100&query=${category}`}
                       alt={category}
                       className="w-20 h-20 object-cover mb-4 rounded"
                     />
@@ -104,43 +128,42 @@ export default function Home() {
         <section className="py-16 bg-muted/50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="text-3xl font-bold mb-8 text-balance">Featured Products</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {featuredProducts.map((product) => (
-                <Link key={product.id} href={`/products/${product.slug}`}>
-                  <Card className="overflow-hidden hover:shadow-lg transition h-full">
-                    <div className="relative">
-                      <img
-                        src={product.images[0] || "/placeholder.svg"}
-                        alt={product.name}
-                        className="w-full h-48 object-cover"
-                      />
-                      {product.originalPrice && (
-                        <div className="absolute top-2 right-2 bg-accent text-accent-foreground px-2 py-1 rounded text-xs font-semibold">
-                          Save {Math.round((1 - product.price / product.originalPrice) * 100)}%
+            {loading ? (
+              <div className="text-center py-12">Loading products...</div>
+            ) : (
+              <>
+                {apiClient.isUsingMockData() && (
+                  <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-800">
+                    Currently using demo data. To connect to your backend API, set the{" "}
+                    <code className="bg-blue-100 px-2 py-1 rounded">NEXT_PUBLIC_API_URL</code> environment variable.
+                  </div>
+                )}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {(featuredProducts || []).slice(0, 6).map((product: any) => (
+                    <Link key={product.productId} href={`/products/${product.slug}`}>
+                      <Card className="overflow-hidden hover:shadow-lg transition h-full">
+                        <div className="relative">
+                          <img
+                            src={`http://localhost:8080${product.imageUrl}` || "/placeholder.svg"}
+                            alt={product.name}
+                            onError={(e) => {
+                              ;(e.target as HTMLImageElement).src = "/placeholder.svg"
+                            }}
+                            className="w-full h-48 object-cover"
+                          />
                         </div>
-                      )}
-                    </div>
-                    <div className="p-4">
-                      <div className="text-sm text-muted-foreground mb-1">{product.brand}</div>
-                      <h3 className="font-semibold mb-2 line-clamp-2">{product.name}</h3>
-                      <div className="flex items-center gap-2 mb-3">
-                        <div className="flex items-center gap-1">
-                          <Star size={16} className="fill-primary text-primary" />
-                          <span className="text-sm font-semibold">{product.rating}</span>
+                        <div className="p-4">
+                          <h3 className="font-semibold mb-2 line-clamp-2">{product.name}</h3>
+                          <div className="flex items-center gap-2">
+                            <span className="text-lg font-bold">${(product.defaultPrice / 1000000).toFixed(0)}</span>
+                          </div>
                         </div>
-                        <span className="text-xs text-muted-foreground">({product.reviews})</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg font-bold">${product.price}</span>
-                        {product.originalPrice && (
-                          <span className="text-sm text-muted-foreground line-through">${product.originalPrice}</span>
-                        )}
-                      </div>
-                    </div>
-                  </Card>
-                </Link>
-              ))}
-            </div>
+                      </Card>
+                    </Link>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         </section>
 
