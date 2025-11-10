@@ -1,0 +1,281 @@
+{
+	"info": {
+		"_postman_id": "add-product-multipart-001",
+		"name": "ElectroShop - Add Product (Multipart FormData)",
+		"description": "API collection for adding products with image upload using multipart/form-data",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Add Product with Image (Multipart)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"Response has success message\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.success).to.eql(true);",
+							"    pm.expect(jsonData.message).to.include(\"created successfully\");",
+							"});",
+							"",
+							"pm.test(\"Response contains product data\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.data).to.have.property(\"productId\");",
+							"    pm.expect(jsonData.data).to.have.property(\"name\");",
+							"    pm.expect(jsonData.data).to.have.property(\"imageUrl\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{admin_token}}",
+						"type": "text",
+						"description": "JWT token for Admin user"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "product",
+							"value": "{\"name\":\"Lenovo Legion 5 Pro\",\"slug\":\"lenovo-legion-5-pro\",\"shortDescription\":\"Gaming laptop with RTX 3070\",\"fullDescription\":\"High-performance gaming laptop with AMD Ryzen 7 processor, RTX 3070 GPU, 16GB RAM, and 512GB SSD storage.\",\"brandId\":2,\"categoryId\":2,\"modelNumber\":\"G713RW-RTX3070\",\"releaseYear\":2025,\"defaultPrice\":23001000}",
+							"type": "text",
+							"description": "Product data as JSON string"
+						},
+						{
+							"key": "image",
+							"type": "file",
+							"src": [],
+							"description": "Product image file (jpg, png, jpeg, webp, max 5MB)"
+						},
+						{
+							"key": "variants",
+							"value": "[{\"sku\":\"Legion-512GB\",\"attributes\":\"512GB SSD, 16GB RAM\",\"price\":360000,\"stock\":12,\"isActive\":true},{\"sku\":\"Legion-1TB\",\"attributes\":\"1TB SSD, 32GB RAM\",\"price\":450000,\"stock\":8,\"isActive\":true}]",
+							"type": "text",
+							"description": "Product variants as JSON string array"
+						},
+						{
+							"key": "specifications",
+							"value": "[{\"specKey\":\"Processor\",\"specValue\":\"AMD Ryzen 7 6800H\"},{\"specKey\":\"Graphics\",\"specValue\":\"NVIDIA RTX 3070\"},{\"specKey\":\"RAM\",\"specValue\":\"16GB DDR5\"},{\"specKey\":\"Storage\",\"specValue\":\"512GB NVMe SSD\"},{\"specKey\":\"Display\",\"specValue\":\"16-inch QHD 165Hz\"}]",
+							"type": "text",
+							"description": "Product specifications as JSON string array"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/admin/product/add",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"admin",
+						"product",
+						"add"
+					]
+				},
+				"description": "Add a new product with image upload using multipart/form-data.\n\n**Required Fields:**\n- product: JSON string with product data (name, brandId, categoryId, defaultPrice are required)\n\n**Optional Fields:**\n- image: Image file (jpg, png, jpeg, webp, max 5MB)\n- variants: JSON string array with product variants\n- specifications: JSON string array with product specifications\n\n**Note:** All JSON fields must be sent as strings, not JSON objects."
+			},
+			"response": []
+		},
+		{
+			"name": "Add Product without Image",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"Response has success message\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.success).to.eql(true);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{admin_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "product",
+							"value": "{\"name\":\"ASUS ZenBook 14 OLED\",\"slug\":\"asus-zenbook-14-oled\",\"shortDescription\":\"Ultra-thin laptop with OLED display\",\"fullDescription\":\"The ASUS ZenBook 14 OLED features a stunning 14-inch OLED display, Intel Core i7 processor, 16GB RAM, and 512GB SSD storage.\",\"brandId\":1,\"categoryId\":1,\"modelNumber\":\"UX3402ZA-KM241W\",\"releaseYear\":2024,\"defaultPrice\":25000000}",
+							"type": "text"
+						},
+						{
+							"key": "variants",
+							"value": "[{\"sku\":\"ZenBook-512GB\",\"attributes\":\"512GB SSD\",\"price\":25000000,\"stock\":20,\"isActive\":true}]",
+							"type": "text"
+						},
+						{
+							"key": "specifications",
+							"value": "[{\"specKey\":\"Processor\",\"specValue\":\"Intel Core i7-1260P\"},{\"specKey\":\"RAM\",\"specValue\":\"16GB LPDDR5\"},{\"specKey\":\"Storage\",\"specValue\":\"512GB PCIe 4.0 SSD\"},{\"specKey\":\"Display\",\"specValue\":\"14-inch 2.8K OLED\"}]",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/admin/product/add",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"admin",
+						"product",
+						"add"
+					]
+				},
+				"description": "Add a new product without image upload. Image can be set later via update endpoint."
+			},
+			"response": []
+		},
+		{
+			"name": "Add Product - Minimal Data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{admin_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "product",
+							"value": "{\"name\":\"Test Product\",\"brandId\":1,\"categoryId\":1,\"defaultPrice\":1000000}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/admin/product/add",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"admin",
+						"product",
+						"add"
+					]
+				},
+				"description": "Add product with only required fields (name, brandId, categoryId, defaultPrice). Slug will be auto-generated from name."
+			},
+			"response": []
+		},
+		{
+			"name": "Add Product - JSON Endpoint (No Image)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{admin_token}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Dell XPS 13\",\n    \"slug\": \"dell-xps-13\",\n    \"shortDescription\": \"Premium ultrabook\",\n    \"fullDescription\": \"Dell XPS 13 with Intel Core i7, 16GB RAM, 512GB SSD\",\n    \"brandId\": 3,\n    \"categoryId\": 1,\n    \"modelNumber\": \"XPS13-9320\",\n    \"releaseYear\": 2024,\n    \"defaultPrice\": 28000000,\n    \"imageUrl\": \"/uploads/dell-xps-13.jpg\",\n    \"variants\": [\n        {\n            \"sku\": \"XPS13-512GB\",\n            \"attributes\": \"512GB SSD\",\n            \"price\": 28000000,\n            \"stock\": 15,\n            \"isActive\": true\n        }\n    ],\n    \"specifications\": [\n        {\n            \"specKey\": \"Processor\",\n            \"specValue\": \"Intel Core i7-1260P\"\n        },\n        {\n            \"specKey\": \"RAM\",\n            \"specValue\": \"16GB LPDDR5\"\n        },\n        {\n            \"specKey\": \"Storage\",\n            \"specValue\": \"512GB PCIe SSD\"\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/admin/product/add/json",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"admin",
+						"product",
+						"add",
+						"json"
+					]
+				},
+				"description": "Add product using JSON endpoint (no image upload). Use this when you already have image URL or don't need to upload image."
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "admin_token",
+			"value": "",
+			"type": "string",
+			"description": "JWT token for Admin user. Get this from login endpoint."
+		}
+	]
+}
+

@@ -23,10 +23,10 @@ export function ProductReviews({ product }: ProductReviewsProps) {
   const [submitted, setSubmitted] = useState(false)
   const [sortBy, setSortBy] = useState<"recent" | "helpful" | "rating-high" | "rating-low">("recent")
 
-  const comments = getProductComments(product.id)
+  const comments = getProductComments(product.productId || 0)
 
   const averageRating =
-    comments.length > 0 ? (comments.reduce((sum, c) => sum + c.rating, 0) / comments.length).toFixed(1) : product.rating
+    comments.length > 0 ? (comments.reduce((sum, c) => sum + c.rating, 0) / comments.length).toFixed(1) : "0"
 
   const sortedComments = [...comments].sort((a, b) => {
     switch (sortBy) {
@@ -48,9 +48,9 @@ export function ProductReviews({ product }: ProductReviewsProps) {
 
     const newComment: Comment = {
       id: `com${Date.now()}`,
-      userId: user.id,
-      userName: user.name,
-      productId: product.id,
+      userId: user.userId,
+      userName: user.name || user.username || "Anonymous",
+      productId: product.productId || 0,
       rating,
       text: reviewText,
       createdAt: new Date(),
@@ -193,19 +193,23 @@ export function ProductReviews({ product }: ProductReviewsProps) {
       {/* Description Tab Content */}
       {activeTab === "description" && (
         <div className="prose prose-sm max-w-none">
-          <p>{product.description}</p>
+          <p>{product.fullDescription || product.shortDescription || "No description available"}</p>
         </div>
       )}
 
       {/* Specs Tab Content */}
       {activeTab === "specs" && (
         <div className="space-y-4">
-          {Object.entries(product.specs).map(([key, value]) => (
-            <div key={key} className="flex justify-between py-2 border-b last:border-0">
-              <span className="font-semibold">{key}</span>
-              <span className="text-muted-foreground">{value}</span>
-            </div>
-          ))}
+          {product.specifications && product.specifications.length > 0 ? (
+            product.specifications.map((spec, idx) => (
+              <div key={idx} className="flex justify-between py-2 border-b last:border-0">
+                <span className="font-semibold">{spec.specKey}</span>
+                <span className="text-muted-foreground">{spec.specValue}</span>
+              </div>
+            ))
+          ) : (
+            <p className="text-muted-foreground">No specifications available</p>
+          )}
         </div>
       )}
     </div>

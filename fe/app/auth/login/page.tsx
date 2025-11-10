@@ -24,7 +24,8 @@ export default function LoginPage() {
     try {
       const user = await login(email, password)
 
-      if (user.role === "admin" || user.role === "staff") {
+      if (user.roleId === 1 || user.roleId === 2) {
+        // roleId 1 = Admin, 2 = Staff
         router.push("/admin")
       } else {
         router.push("/")
@@ -37,9 +38,9 @@ export default function LoginPage() {
   }
 
   const demoAccounts = [
-    { email: "user@example.com", password: "password", role: "User" },
-    { email: "staff@example.com", password: "password", role: "Staff" },
-    { email: "admin@example.com", password: "password", role: "Admin" },
+    { email: "user", password: "password", role: "User" },
+    { email: "staff", password: "password", role: "Staff" },
+    { email: "admin", password: "password", role: "Admin" },
   ]
 
   const handleQuickLogin = (quickEmail: string) => {
@@ -67,12 +68,12 @@ export default function LoginPage() {
             )}
 
             <div>
-              <label className="text-sm font-medium mb-1 block">Email</label>
+              <label className="text-sm font-medium mb-1 block">Username</label>
               <input
-                type="email"
+                type="text"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="user@example.com"
+                placeholder="Enter your username"
                 className="w-full px-3 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 required
               />

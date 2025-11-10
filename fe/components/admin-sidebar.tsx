@@ -14,6 +14,7 @@ import {
   HelpCircle,
   Settings,
   LogOut,
+  FolderTree,
 } from "lucide-react"
 import { useAuth } from "@/contexts/auth-context"
 import { Button } from "@/components/ui/button"
@@ -32,6 +33,7 @@ export function AdminSidebar() {
   const navItems: NavItem[] = [
     { label: "Dashboard", href: "/admin", icon: <LayoutDashboard size={20} /> },
     { label: "Products", href: "/admin/products", icon: <Package size={20} /> },
+    { label: "Categories", href: "/admin/categories", icon: <FolderTree size={20} />, adminOnly: true },
     { label: "Orders", href: "/admin/orders", icon: <ShoppingCart size={20} /> },
     { label: "Users", href: "/admin/users", icon: <Users size={20} />, adminOnly: true },
     { label: "Promotions", href: "/admin/promotions", icon: <Ticket size={20} />, adminOnly: true },
@@ -40,13 +42,15 @@ export function AdminSidebar() {
     { label: "Settings", href: "/admin/settings", icon: <Settings size={20} />, adminOnly: true },
   ]
 
-  const filteredItems = navItems.filter((item) => !item.adminOnly || user?.role === "admin")
+  const filteredItems = navItems.filter((item) => !item.adminOnly || user?.roleId === 1)
 
   return (
     <aside className="w-64 bg-muted/30 border-r border-border h-screen sticky top-0 overflow-y-auto">
       <div className="p-6 border-b border-border">
-        <h2 className="text-xl font-bold text-primary">TPF Shop</h2>
-        <p className="text-xs text-muted-foreground mt-1">{user?.role.toUpperCase()} Panel</p>
+        <h2 className="text-xl font-bold text-primary">ElectroShop</h2>
+        <p className="text-xs text-muted-foreground mt-1">
+          {user?.roleId === 1 ? "ADMIN" : user?.roleId === 2 ? "STAFF" : "USER"} Panel
+        </p>
       </div>
 
       <nav className="p-4 space-y-2">

@@ -7,12 +7,19 @@ import { useRouter } from "next/navigation"
 import { useAuth } from "@/contexts/auth-context"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { AlertCircle, CheckCircle } from "lucide-react"
 
 export default function RegisterPage() {
   const router = useRouter()
   const { register } = useAuth()
-  const [formData, setFormData] = useState({ name: "", email: "", phone: "", password: "", confirmPassword: "" })
+  const [formData, setFormData] = useState({
+    username: "",
+    name: "",
+    email: "",
+    phone: "",
+    shippingAddress: "",
+    password: "",
+    confirmPassword: "",
+  })
   const [error, setError] = useState("")
   const [success, setSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -57,18 +64,31 @@ export default function RegisterPage() {
 
           {success ? (
             <div className="text-center py-8">
-              <CheckCircle size={48} className="mx-auto mb-4 text-accent" />
+              <div className="w-12 h-12 bg-accent rounded-full flex items-center justify-center text-white mx-auto mb-4">
+                <span className="font-bold">✓</span>
+              </div>
               <h2 className="text-lg font-semibold mb-2">Account Created!</h2>
               <p className="text-muted-foreground">Redirecting to home...</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               {error && (
-                <div className="bg-destructive/10 border border-destructive/30 rounded-lg p-3 flex gap-2 text-sm text-destructive">
-                  <AlertCircle size={16} className="flex-shrink-0 mt-0.5" />
+                <div className="bg-destructive/10 border border-destructive/30 rounded-lg p-3 text-sm text-destructive">
                   {error}
                 </div>
               )}
+
+              <div>
+                <label className="text-sm font-medium mb-1 block">Username</label>
+                <input
+                  type="text"
+                  value={formData.username}
+                  onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                  placeholder="Choose a username"
+                  className="w-full px-3 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  required
+                />
+              </div>
 
               <div>
                 <label className="text-sm font-medium mb-1 block">Full Name</label>
@@ -101,6 +121,18 @@ export default function RegisterPage() {
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   placeholder="0912345678"
+                  className="w-full px-3 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium mb-1 block">Shipping Address</label>
+                <input
+                  type="text"
+                  value={formData.shippingAddress}
+                  onChange={(e) => setFormData({ ...formData, shippingAddress: e.target.value })}
+                  placeholder="123 Main Street"
                   className="w-full px-3 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                   required
                 />

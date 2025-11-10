@@ -1,39 +1,78 @@
 "use client"
+
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { useAuth } from "@/contexts/auth-context"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { mockOrders } from "@/lib/mock-data"
 import { Package, UserIcon, LogOut, ChevronRight } from "lucide-react"
+import { useEffect, useState } from "react"
+import { apiClient } from "@/lib/api-client"
 
 export default function AccountPage() {
-  const { user, logout } = useAuth()
+  const { user, logout, isAuthenticated } = useAuth()
   const router = useRouter()
+  const [profile, setProfile] = useState<any>(null)
+  const [orders, setOrders] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
 
-  if (!user) {
+  useEffect(() => {
+    if (!isAuthenticated) {
+      router.push("/auth/login")
+      return
+    }
+
+    const fetchData = async () => {
+      try {
+        const [profileRes, ordersRes] = await Promise.all([apiClient.getUserProfile(), apiClient.getUserOrders(0, 5)])
+
+        if (profileRes.success) {
+          setProfile(profileRes.data)
+        }
+        if (ordersRes.success) {
+          setOrders(ordersRes.data.orders || [])
+        }
+      } catch (error: any) {
+        // Better error logging
+        const errorMessage = error instanceof Error ? error.message : (error?.message || "Unknown error")
+        console.error("Failed to fetch account data:", {
+          message: errorMessage,
+          code: error?.code,
+          status: error?.status,
+          error: error instanceof Error ? {
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+          } : error,
+        })
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchData()
+  }, [isAuthenticated, router])
+
+  if (!isAuthenticated || loading) {
     return (
       <>
         <Header />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
-          <h1 className="text-2xl font-bold mb-4">Please log in to view your account</h1>
-          <Link href="/auth/login">
-            <Button>Go to Login</Button>
-          </Link>
+          <h1 className="text-2xl font-bold mb-4">Loading...</h1>
         </div>
         <Footer />
       </>
     )
   }
 
-  const userOrders = mockOrders.filter((o) => o.userId === user.id)
-
   const handleLogout = () => {
     logout()
     router.push("/")
   }
+
+  const isAdmin = user?.roleId === 1
+  const isStaff = user?.roleId === 2
 
   return (
     <>
@@ -48,12 +87,12 @@ export default function AccountPage() {
               <Card className="p-6">
                 <div className="text-center mb-6">
                   <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">
-                    {user.name.charAt(0)}
+                    {((user?.name || user?.username || user?.email)?.charAt(0) || "U").toUpperCase()}
                   </div>
-                  <h2 className="font-bold text-lg">{user.name}</h2>
-                  <p className="text-sm text-muted-foreground">{user.email}</p>
+                  <h2 className="font-bold text-lg">{user?.name || user?.username || "User"}</h2>
+                  <p className="text-sm text-muted-foreground">{user?.email || "No email"}</p>
                   <div className="mt-2 px-2 py-1 bg-primary/10 text-primary text-xs font-semibold rounded w-fit mx-auto">
-                    {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                    {user?.roleId === 1 ? "Admin" : user?.roleId === 2 ? "Staff" : "User"}
                   </div>
                 </div>
 
@@ -78,26 +117,14 @@ export default function AccountPage() {
                     </div>
                     <ChevronRight size={16} />
                   </Link>
-                  {user.role === "admin" && (
+                  {(isAdmin || isStaff) && (
                     <Link
                       href="/admin"
                       className="flex items-center justify-between p-2 hover:bg-muted rounded transition text-primary font-semibold"
                     >
                       <div className="flex items-center gap-2">
                         <UserIcon size={18} />
-                        <span>Admin Panel</span>
-                      </div>
-                      <ChevronRight size={16} />
-                    </Link>
-                  )}
-                  {user.role === "staff" && (
-                    <Link
-                      href="/admin"
-                      className="flex items-center justify-between p-2 hover:bg-muted rounded transition text-primary font-semibold"
-                    >
-                      <div className="flex items-center gap-2">
-                        <UserIcon size={18} />
-                        <span>Staff Dashboard</span>
+                        <span>{isAdmin ? "Admin" : "Staff"} Panel</span>
                       </div>
                       <ChevronRight size={16} />
                     </Link>
@@ -124,60 +151,64 @@ export default function AccountPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="text-sm text-muted-foreground">Full Name</label>
-                    <p className="font-semibold">{user.name}</p>
+                    <p className="font-semibold">{profile?.name || user?.name}</p>
                   </div>
                   <div>
                     <label className="text-sm text-muted-foreground">Email</label>
-                    <p className="font-semibold">{user.email}</p>
+                    <p className="font-semibold">{profile?.email || user?.email}</p>
                   </div>
                   <div>
                     <label className="text-sm text-muted-foreground">Phone</label>
-                    <p className="font-semibold">{user.phone}</p>
+                    <p className="font-semibold">{profile?.phone || user?.phone || "Not provided"}</p>
                   </div>
                   <div>
-                    <label className="text-sm text-muted-foreground">Member Since</label>
-                    <p className="font-semibold">{user.createdAt.toLocaleDateString()}</p>
+                    <label className="text-sm text-muted-foreground">Shipping Address</label>
+                    <p className="font-semibold">{profile?.shippingAddress || "Not provided"}</p>
                   </div>
                 </div>
               </Card>
 
-              {/* Orders */}
+              {/* Recent Orders */}
               <Card className="p-6">
-                <h2 className="text-xl font-bold mb-4">Recent Orders ({userOrders.length})</h2>
-                {userOrders.length === 0 ? (
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-xl font-bold">Recent Orders ({orders.length})</h2>
+                  <Link href="/account/orders" className="text-primary hover:underline text-sm">
+                    View All
+                  </Link>
+                </div>
+                {orders.length === 0 ? (
                   <p className="text-muted-foreground">No orders yet</p>
                 ) : (
                   <div className="space-y-4">
-                    {userOrders.map((order) => (
-                      <div key={order.id} className="border rounded-lg p-4">
+                    {orders.map((order) => (
+                      <Link
+                        key={order.orderId}
+                        href={`/account/orders/${order.orderId}`}
+                        className="border rounded-lg p-4 hover:bg-muted transition"
+                      >
                         <div className="flex justify-between items-start mb-2">
                           <div>
-                            <p className="font-semibold">Order #{order.id}</p>
-                            <p className="text-sm text-muted-foreground">{order.createdAt.toLocaleDateString()}</p>
+                            <p className="font-semibold">Order #{order.orderId}</p>
+                            <p className="text-sm text-muted-foreground">
+                              {new Date(order.createdAt).toLocaleDateString()}
+                            </p>
                           </div>
                           <div className="text-right">
-                            <p className="font-bold text-lg">${order.total}</p>
+                            <p className="font-bold text-lg">{order.totalPrice?.toLocaleString("vi-VN")} VND</p>
                             <div
                               className={`text-xs font-semibold px-2 py-1 rounded w-fit mt-1 ${
-                                order.status === "delivered"
+                                order.status === "DELIVERED"
                                   ? "bg-accent/10 text-accent"
-                                  : order.status === "shipped"
+                                  : order.status === "SHIPPED"
                                     ? "bg-primary/10 text-primary"
                                     : "bg-muted text-muted-foreground"
                               }`}
                             >
-                              {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                              {order.status}
                             </div>
                           </div>
                         </div>
-                        <div className="text-sm">
-                          {order.items.map((item, idx) => (
-                            <p key={idx} className="text-muted-foreground">
-                              {item.productName} x{item.quantity}
-                            </p>
-                          ))}
-                        </div>
-                      </div>
+                      </Link>
                     ))}
                   </div>
                 )}

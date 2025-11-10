@@ -26,9 +26,6 @@ public class RestApiErrorHandler extends ResponseEntityExceptionHandler {
         try {
             return pjp.proceed();
         } catch (Exception e) {
-            String methodName = pjp.getSignature().getName();
-            
-
             MethodSignature methodSignature = (MethodSignature) pjp.getSignature();
             Method method = methodSignature.getMethod();
 

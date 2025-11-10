@@ -102,6 +102,10 @@ public class Product {
     @Column(name = "default_price", precision = 18, scale = 2)
     private BigDecimal defaultPrice;
 
+    // Main image URL of the product.
+    @Column(name = "image_url", length = 500)
+    private String imageUrl;
+
     // Product variants (different sizes, colors, etc.).
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default

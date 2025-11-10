@@ -1,139 +1,189 @@
-export type UserRole = "user" | "staff" | "admin"
+export interface ApiResponse<T> {
+  success: boolean
+  message: string
+  data: T
+  code?: string
+  originMessage?: string
+}
+
+export interface PaginatedResponse<T> {
+  [key: string]: T[]
+  page: number
+  size: number
+  totalElements: number
+  totalPages: number
+  first: boolean
+  last: boolean
+}
 
 export interface User {
-  id: string
+  userId: number
+  username: string
   email: string
   name: string
+  phone?: string
+  shippingAddress?: string
+  avatarUrl?: string
+  roleId: number
+  createdAt?: string
+}
+
+export interface LoginResponse {
+  token: string
+  userId: number
+  username: string
+  email: string
+  roleId: number
+}
+
+export interface RegisterData {
+  username: string
+  email: string
+  password: string
+  confirmPassword: string
+  name: string
   phone: string
-  role: UserRole
-  avatar?: string
-  createdAt: Date
-  isVerified?: boolean
+  shippingAddress: string
 }
 
 export interface Product {
-  id: string
+  productId: number
   name: string
   slug: string
-  description: string
-  brand: string
-  category: string
-  price: number
-  originalPrice?: number
-  images: string[]
-  rating: number
-  reviews: number
-  stock: number
-  variants: ProductVariant[]
-  specs: Record<string, string>
+  shortDescription: string
+  fullDescription?: string
+  defaultPrice: number
+  imageUrl: string
+  brandId: number
+  categoryId: number
+  variants?: ProductVariant[]
+  specifications?: Specification[]
 }
 
 export interface ProductVariant {
-  id: string
-  color: string
+  variantId: number
   sku: string
+  attributes: string
+  price: number
   stock: number
+  isActive: boolean
+}
+
+export interface Specification {
+  specKey: string
+  specValue: string
 }
 
 export interface CartItem {
-  productId: string
-  variantId: string
+  variantId: number
+  productId: number
+  productName: string
+  sku: string
+  attributes: string
+  price: number
   quantity: number
+  subtotal: number
+  imageUrl: string
+}
+
+export interface CartResponse {
+  items: CartItem[]
+  totalItems: number
+  totalPrice: number
 }
 
 export interface Order {
-  id: string
-  userId: string
-  items: OrderItem[]
-  total: number
-  status: "pending" | "processing" | "shipped" | "delivered" | "canceled"
-  createdAt: Date
-  shippingAddress?: Address
+  orderId: number
+  userId?: number
+  userName?: string
+  totalPrice: number
+  shippingAddress?: string
+  status: string
+  statusName?: string
+  paymentStatus?: string
+  note?: string
+  createdAt: string
+  items?: OrderItem[]
+  payment?: PaymentInfo
 }
 
 export interface OrderItem {
-  productId: string
+  variantId: number
+  productId: number
   productName: string
-  price: number
+  sku: string
   quantity: number
-  variantColor: string
+  unitPrice: number
+  subtotal: number
 }
 
-export interface Comment {
-  id: string
-  userId: string
-  userName: string
-  productId: string
-  rating: number
-  text: string
-  createdAt: Date
-  helpful?: number
+export interface PaymentInfo {
+  paymentId: number
+  paymentMethod: string
+  paymentStatus: string
+  amount: number
 }
 
-export interface Promotion {
-  id: string
-  title: string
-  description: string
-  discount: number
-  code?: string
-  startDate: Date
-  endDate: Date
+export interface Category {
+  categoryId?: number
+  name: string
+  description?: string
+  parentId?: number | null
 }
 
-export interface Address {
-  id?: string
-  fullName: string
-  address: string
-  phone: string
-  city?: string
-  district?: string
-  ward?: string
-  isDefault?: boolean
+export interface Brand {
+  brandId?: number
+  name: string
 }
 
 export interface Voucher {
-  id: string
+  voucherId?: number
   code: string
   discountPercent?: number
   discountAmount?: number
-  description: string
-  active: boolean
+  description?: string
+  isActive?: boolean
+}
+
+export interface SupportTicket {
+  ticketId?: number
+  userId?: number
+  subject: string
+  message: string
+  status: string
+  createdAt?: string
+  responses?: string[]
 }
 
 export interface FAQ {
-  id: string
+  faqId?: number
   question: string
   answer: string
   category: string
 }
 
-export interface SupportTicket {
-  id: string
-  userId: string
-  subject: string
-  message: string
-  status: "open" | "in-progress" | "closed"
-  createdAt: Date
-  responses: string[]
+export interface Comment {
+  commentId?: number
+  userId?: number
+  userName?: string
+  productId: number
+  content: string
+  rating: number
+  createdAt?: string
+  helpful?: number
 }
 
-export interface AdminStats {
-  revenue: number[]
-  orders: number
-  products: number
-  users: number
-  topProducts: string[]
+export interface CheckoutData {
+  shippingAddress: string
+  paymentMethod: string
+  voucherId?: number
+  note?: string
 }
 
-export interface Brand {
-  id: string
-  name: string
-  logo?: string
-}
-
-export interface Category {
-  id: string
-  name: string
-  description?: string
-  image?: string
+export interface CheckoutResponse {
+  orderId: number
+  totalPrice: number
+  status: string
+  paymentStatus: string
+  createdAt: string
 }

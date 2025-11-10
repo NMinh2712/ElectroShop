@@ -11,9 +11,13 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import com.fptu.group1.common.constant.RouteConst;
+import com.fptu.group1.security.JwtAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -21,9 +25,11 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig {
 
     private final CustomAccessDeniedHandler accessDeniedHandler;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    public SecurityConfig(CustomAccessDeniedHandler accessDeniedHandler) {
+    public SecurityConfig(CustomAccessDeniedHandler accessDeniedHandler, JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.accessDeniedHandler = accessDeniedHandler;
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
     @Bean
@@ -32,10 +38,17 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**", "/api/v1/auth/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .anyRequest().permitAll()) // Cho phép tất cả request vì không có JWT filter
+                        .requestMatchers("/uploads/**").permitAll() // Allow public access to uploaded images
+                        .requestMatchers(RouteConst.API_BASE + "/products/**").permitAll()
+                        .requestMatchers(RouteConst.API_BASE + RouteConst.ADMIN_PRODUCT_ROUTE + "/**").authenticated()
+                        .requestMatchers(RouteConst.API_BASE + "/admin/**").authenticated()
+                        .requestMatchers(RouteConst.API_BASE + "/staff/**").authenticated()
+                        .requestMatchers(RouteConst.API_BASE + "/user/**").authenticated()
+                        .anyRequest().permitAll())
                 .exceptionHandling(ex -> ex
                         .accessDeniedHandler(accessDeniedHandler) // Gắn custom 403 handler
                 );
